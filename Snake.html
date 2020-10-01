@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Snake</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div id="game">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+        </div>
+        <div id="scoreBoard">
+            <div id="maxScore">
+                <p>Max score</p>
+                <p id="maxScoreValue">0</p>
+            </div>
+            <div id="currentScore">
+                <p>Current score</p>
+                <p id="currentScoreValue">0</p>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script>
+    window.onload = function() {
+        canvas = document.getElementById("gameCanvas")
+        maxScore = document.getElementById("maxScoreValue")
+        currentScore = document.getElementById("currentScoreValue")
+        context = canvas.getContext("2d")
+        document.addEventListener("keydown", keyPush)
+        setInterval(game, 80)
+    }
+    
+    velX = velY = 0
+    gs = tileCount = 20
+    appleX = appleY = 15
+    posX = posY = 10
+    trail = []
+    tail = 5
+
+    function game() {
+        posX += velX
+        posY += velY
+
+        if (posX < 0)
+            posX = tileCount-1
+        if (posX > tileCount-1)
+            posX = 0
+        
+        if (posY < 0)
+            posY = tileCount-1
+        if (posY > tileCount-1)
+            posY = 0
+        
+        context.fillStyle = "black"
+        context.fillRect(0, 0, canvas.width, canvas.height)
+
+        context.fillStyle = "lime"
+        for (var i=0; i<trail.length; i++){
+            context.fillRect(trail[i].x*gs, trail[i].y*gs, gs-2, gs-2)
+            if (trail[i].x == posX && trail[i].y == posY)
+                tail = 5
+        }
+
+        trail.push ({x:posX, y:posY})
+        while (trail.length > tail){
+            trail.shift()
+        }
+
+        if (appleX==posX && appleY==posY){
+            tail++
+            appleX = Math.floor(Math.random()*tileCount)
+            appleY = Math.floor(Math.random()*tileCount)
+        }
+
+        currentScore.innerHTML = tail
+        maxScore.innerHTML = Math.max(tail, maxScore.innerHTML)
+
+        context.fillStyle = "red"
+        context.fillRect(appleX*gs, appleY*gs, gs-2, gs-2)
+    }
+
+    function keyPush(evt) {
+        switch(evt.keyCode) {
+            case 83:
+                if (velY != -1){
+                    velY = 1
+                    velX = 0
+                }
+                break
+            case 68:
+                if (velX != -1){
+                    velY = 0
+                    velX = 1
+                }
+                break
+            case 87:
+                if (velY != 1){
+                    velY = -1
+                    velX = 0
+                }
+                break
+            case 65:
+                if (velX != 1){
+                    velY = 0
+                    velX = -1
+                }
+                break
+            case 40:
+                if (velY != -1){
+                    velY = 1
+                    velX = 0
+                }
+                break
+            case 39:
+                if (velX != -1){
+                    velY = 0
+                    velX = 1
+                }
+                break
+            case 38:
+                if (velY != 1){
+                    velY = -1
+                    velX = 0
+                }
+                break
+            case 37:
+                if (velX != 1){
+                    velY = 0
+                    velX = -1
+                }
+                break
+        }
+    }
+</script>
